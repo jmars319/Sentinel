@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { PhoneLookupResult } from "@sentinel/api-contracts";
-import { createInsufficientSignalAssessment, type EvidenceItem, type SourceObservation } from "@sentinel/domain";
+import { orchestratePhoneLookup } from "@sentinel/domain";
 import { redactPhoneNumber } from "@sentinel/privacy";
 import { phoneLookupQuerySchema, phoneLookupResultSchema } from "@sentinel/validation";
 
@@ -31,42 +31,58 @@ export async function POST(request: Request) {
   const now = new Date().toISOString();
   const normalizedPhoneNumber = normalizePhoneNumber(parsed.data.phoneNumber);
   const redacted = redactPhoneNumber(normalizedPhoneNumber);
+  const orchestration = await orchestratePhoneLookup({
+    rawInput: parsed.data.phoneNumber,
+    normalizedPhoneNumber,
+    regionHint: parsed.data.regionHint,
+    includeEvidence: parsed.data.includeEvidence,
+    requestedAt: now
+  });
+  const includeEvidence = parsed.data.includeEvidence !== false;
+  const evidence = includeEvidence ? orchestration.evidence : [];
+  const assessment = includeEvidence
+    ? orchestration.assessment
+    : {
+        ...orchestration.assessment,
+        evidence: []
+      };
 
-  const sourceSummaries: SourceObservation[] = [
-    {
-      sourceId: "manual-input",
-      status: "complete",
-      observedAt: now,
-      summary: "Input captured and normalized for assessment."
-    },
-    {
-      sourceId: "placeholder",
-      status: "not-configured",
-      observedAt: now,
-      summary: "No external reputation or telecom sources are configured yet."
-    }
-  ];
+  const notices: PhoneLookupResult["notices"] = [];
 
-  const evidence: EvidenceItem[] = [
-    {
-      id: "placeholder-observation",
-      label: "Lookup shell response",
-      summary: "The phone lookup path is scaffolded but not enriched by live providers.",
-      direction: "context-only",
-      confidence: 0.22,
-      sourceId: "placeholder",
-      observedAt: now,
-      redactionSafeSummary:
-        "Lookup scaffold returned a placeholder response because provider integrations are not configured."
-    }
-  ];
+  if (orchestration.assessment.posture === "insufficient-signal") {
+    notices.push({
+      code: "placeholder-result",
+      summary:
+        "Sentinel completed the lookup orchestration flow, but no meaningful provider evidence is available yet."
+    });
+  }
+
+  if (
+    orchestration.providerResults.some(
+      (result) => result.providerStatus === "placeholder"
+    )
+  ) {
+    notices.push({
+      code: "provider-not-configured",
+      summary:
+        "The provider adapter layer is active, but live phone intelligence integrations are not configured yet."
+    });
+  }
+
+  notices.push({
+    code: "redacted-output",
+    summary: `The lookup target is displayed in redacted form (${redacted.redactedValue}).`
+  });
 
   const payload: PhoneLookupResult = {
     job: {
       id: `lookup-${Date.now()}`,
       targetKind: "phone-number",
       submittedAt: now,
-      status: "insufficient-signal",
+      status:
+        orchestration.assessment.posture === "insufficient-signal"
+          ? "insufficient-signal"
+          : "completed",
       correlationKey: normalizedPhoneNumber
     },
     query: {
@@ -75,28 +91,10 @@ export async function POST(request: Request) {
       maskedPhoneNumber: redacted.redactedValue,
       ...(parsed.data.regionHint ? { regionHint: parsed.data.regionHint } : {})
     },
-    assessment: createInsufficientSignalAssessment({
-      observedAt: now,
-      sources: sourceSummaries,
-      evidence,
-      note: "This result confirms the shared Sentinel lookup flow. It does not claim a real scam verdict without configured source integrations."
-    }),
+    assessment,
     evidence,
-    sourceSummaries,
-    notices: [
-      {
-        code: "placeholder-result",
-        summary: "This is a scaffold result intended to validate contracts, UX, and reasoning presentation."
-      },
-      {
-        code: "provider-not-configured",
-        summary: "Configure a live lookup provider before using Sentinel for real-world phone intelligence."
-      },
-      {
-        code: "redacted-output",
-        summary: `The lookup target is displayed in redacted form (${redacted.redactedValue}).`
-      }
-    ],
+    sourceSummaries: orchestration.sourceSummaries,
+    notices,
     generatedAt: now
   };
 
