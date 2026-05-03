@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Sentinel Desktop",
+  "productName": "tenra Sentinel",
   "version": "0.1.0",
-  "identifier": "com.jamarq.sentinel.desktop",
+  "identifier": "co.tenra.sentinel.desktop",
   "build": {
     "beforeDevCommand": "pnpm --filter @sentinel/desktopapp run dev",
     "beforeBuildCommand": "pnpm --filter @sentinel/desktopapp run build:ui",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Sentinel Desktop",
+        "title": "tenra Sentinel",
         "width": 1320,
         "height": 900,
         "resizable": true

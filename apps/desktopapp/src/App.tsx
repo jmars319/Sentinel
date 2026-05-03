@@ -8,7 +8,7 @@ const sections = [
   },
   {
     title: "Assessments",
-    body: "Review structured Sentinel outputs with evidence, source posture, and confidence context."
+    body: "Review structured tenra Sentinel outputs with evidence, source posture, and confidence context."
   },
   {
     title: "Sources",

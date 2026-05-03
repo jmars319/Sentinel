@@ -1,4 +1,4 @@
-# Sentinel Stability Checklist
+# tenra Sentinel Stability Checklist
 
 - `pnpm install` completes from the repo root.
 - Workspace imports resolve across apps and packages.

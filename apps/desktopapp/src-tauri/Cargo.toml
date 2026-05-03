@@ -1,8 +1,8 @@
 [package]
 name = "sentinel_desktop"
 version = "0.1.0"
-description = "Sentinel desktop shell"
-authors = ["JAMARQ"]
+description = "tenra Sentinel desktop shell"
+authors = ["tenra"]
 edition = "2021"
 
 [lib]

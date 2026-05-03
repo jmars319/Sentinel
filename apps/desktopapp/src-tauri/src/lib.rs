@@ -8,5 +8,5 @@ pub fn run() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![health_ping])
         .run(tauri::generate_context!())
-        .expect("error while running Sentinel desktop");
+        .expect("error while running tenra Sentinel desktop");
 }

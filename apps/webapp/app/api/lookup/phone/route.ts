@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     notices.push({
       code: "placeholder-result",
       summary:
-        "Sentinel completed the lookup orchestration flow, but no meaningful provider evidence is available yet."
+        "tenra Sentinel completed the lookup orchestration flow, but no meaningful provider evidence is available yet."
     });
   }
 

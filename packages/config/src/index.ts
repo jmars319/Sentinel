@@ -1,4 +1,4 @@
-export const sentinelAppName = "Sentinel";
+export const sentinelAppName = "tenra Sentinel";
 export const sentinelTagline =
   "Explainable signal aggregation for calm, confidence-weighted risk assessment.";
 

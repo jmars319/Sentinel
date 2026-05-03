@@ -1,6 +1,6 @@
-# Sentinel
+# tenra Sentinel
 
-Sentinel is an explainable signal-aggregation engine that synthesizes fragmented data
+tenra Sentinel is an explainable signal-aggregation engine that synthesizes fragmented data
 sources into calm, confidence-weighted risk assessments.
 
 It is not a blocker, not a search engine, and not an AI oracle. The intended role is a
@@ -51,11 +51,11 @@ pnpm run doctor
 
 ## Current scaffold state
 
-- The web app boots with a Sentinel-specific homepage and a phone lookup form shell.
+- The web app boots with a tenra Sentinel-specific homepage and a phone lookup form shell.
 - The web app exposes a placeholder `/api/lookup/phone` route using shared contracts and validation.
 - The desktop app is a valid React + Vite + Tauri shell with operator-oriented placeholder sections.
 - The mobile app is a valid Expo shell kept intentionally minimal.
-- Shared packages define the initial Sentinel vocabulary so product logic can expand without
+- Shared packages define the initial tenra Sentinel vocabulary so product logic can expand without
   bloating the app layers.
 
 ## Next reading
