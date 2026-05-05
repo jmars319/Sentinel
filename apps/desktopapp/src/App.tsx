@@ -10,7 +10,7 @@ import {
 import { redactPhoneNumber } from "@sentinel/privacy";
 import type { EvidenceDirection } from "@sentinel/shared-types";
 import { confidenceBandCopy, riskLevelToneMap } from "@sentinel/ui";
-import { readDesktopStore, writeDesktopStore } from "./lib/desktopStore";
+import { readDesktopStore, readLegacyLocalStorage, writeDesktopStore } from "./lib/desktopStore";
 
 type ReviewFlagId =
   | "payment-pressure"
@@ -261,10 +261,18 @@ export default function App() {
       .then((storedLookups) => {
         if (cancelled) return;
 
-        if (Array.isArray(storedLookups) && storedLookups.length > 0) {
-          setSavedLookups(storedLookups);
-          setActiveId(storedLookups[0]?.id ?? "");
-          setNotice("Desktop store loaded.");
+        const legacyLookups = readLegacyLocalStorage<SavedLookup[]>(storageKey);
+        const nextLookups =
+          Array.isArray(storedLookups) && storedLookups.length > 0
+            ? storedLookups
+            : Array.isArray(legacyLookups) && legacyLookups.length > 0
+              ? legacyLookups
+              : null;
+
+        if (nextLookups) {
+          setSavedLookups(nextLookups);
+          setActiveId(nextLookups[0]?.id ?? "");
+          setNotice(storedLookups ? "Desktop store loaded." : "Legacy workbench records migrated.");
         }
 
         setIsStoreReady(true);
