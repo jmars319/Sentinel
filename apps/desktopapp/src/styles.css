@@ -302,7 +302,8 @@ textarea {
   gap: 8px;
 }
 
-.action-row button:nth-child(2) {
+.action-row button:nth-child(2),
+.action-row button:nth-child(3) {
   background: #fffdfa;
   border-color: #cabca8;
   color: #17222f;

@@ -243,6 +243,36 @@ const toMarkdown = (saved: SavedLookup) => {
   ].join("\n");
 };
 
+const toDeriveRiskBrief = (saved: SavedLookup) => {
+  const { result } = saved;
+
+  return [
+    "# Derive Risk Brief From Sentinel",
+    "",
+    `Target: ${result.query.maskedPhoneNumber}`,
+    `Region: ${result.query.regionHint ?? "n/a"}`,
+    `Risk: ${riskLevelToneMap[result.assessment.level].label}`,
+    `Confidence: ${result.assessment.confidence.score.toFixed(2)} (${result.assessment.confidence.band.label})`,
+    `Generated: ${result.generatedAt}`,
+    "",
+    "## Question For Derive",
+    "",
+    "Given the Sentinel evidence and source posture below, what can be concluded, what remains uncertain, and what action should a human reviewer take next?",
+    "",
+    "## Current Reasoning",
+    "",
+    result.assessment.reasoning.narrative,
+    "",
+    "## Evidence",
+    "",
+    ...result.evidence.map((item) => `- ${item.label}: ${item.redactionSafeSummary}`),
+    "",
+    "## Sources",
+    "",
+    ...result.sourceSummaries.map((source) => `- ${source.sourceId}: ${source.status} - ${source.summary}`),
+  ].join("\n");
+};
+
 export default function App() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [regionHint, setRegionHint] = useState("US");
@@ -299,6 +329,7 @@ export default function App() {
   const activeLookup = savedLookups.find((lookup) => lookup.id === activeId) ?? savedLookups[0] ?? null;
   const activeTone = activeLookup ? riskLevelToneMap[activeLookup.result.assessment.level] : riskLevelToneMap.unknown;
   const markdown = useMemo(() => (activeLookup ? toMarkdown(activeLookup) : ""), [activeLookup]);
+  const deriveRiskBrief = useMemo(() => (activeLookup ? toDeriveRiskBrief(activeLookup) : ""), [activeLookup]);
 
   const toggleFlag = (flagId: ReviewFlagId) => {
     setSelectedFlags((current) =>
@@ -345,6 +376,16 @@ export default function App() {
     try {
       await navigator.clipboard.writeText(markdown);
       setNotice("Markdown copied.");
+    } catch {
+      setNotice("Clipboard copy failed. Export still works.");
+    }
+  };
+
+  const copyDeriveBrief = async () => {
+    if (!activeLookup) return;
+    try {
+      await navigator.clipboard.writeText(deriveRiskBrief);
+      setNotice("Derive risk brief copied.");
     } catch {
       setNotice("Clipboard copy failed. Export still works.");
     }
@@ -511,6 +552,9 @@ export default function App() {
                 <div className="action-row">
                   <button type="button" onClick={copyMarkdown}>
                     Copy Markdown
+                  </button>
+                  <button type="button" onClick={copyDeriveBrief}>
+                    Copy Derive Brief
                   </button>
                   <button type="button" onClick={exportMarkdown}>
                     Export
