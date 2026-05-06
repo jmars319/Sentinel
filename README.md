@@ -44,6 +44,7 @@ pnpm run dev:web
 pnpm run dev:desktop
 pnpm run dev:mobile
 pnpm run dev:both
+pnpm run launch:desktop
 pnpm run verify:all
 pnpm run doctor
 ```

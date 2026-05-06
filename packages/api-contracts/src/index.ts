@@ -33,3 +33,21 @@ export interface HealthStatusResponse {
   timestamp: IsoTimestamp;
   notes: string[];
 }
+
+export type SentinelRiskBriefConsumer =
+  | "derive"
+  | "guardrail"
+  | "assembly"
+  | "manual";
+
+export interface SentinelRiskBrief {
+  schema: "tenra-sentinel.risk-brief.v1";
+  exportedAt: IsoTimestamp;
+  sourceApp: "sentinel";
+  lookup: PhoneLookupResult;
+  handoff: {
+    questionForDerive: string;
+    recommendedConsumers: SentinelRiskBriefConsumer[];
+    actionPosture: "observe" | "review" | "limit" | "avoid" | "insufficient-signal";
+  };
+}

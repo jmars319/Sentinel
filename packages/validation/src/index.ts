@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { PhoneLookupQuery, PhoneLookupResult } from "@sentinel/api-contracts";
+import type { PhoneLookupQuery, PhoneLookupResult, SentinelRiskBrief } from "@sentinel/api-contracts";
 import type {
   ConfidenceAssessment,
   EvidenceItem,
@@ -113,3 +113,18 @@ export const healthStatusResponseSchema = z.object({
   timestamp: isoTimestampSchema,
   notes: z.array(z.string())
 });
+
+export const sentinelRiskBriefSchema = z.object({
+  schema: z.literal("tenra-sentinel.risk-brief.v1"),
+  exportedAt: isoTimestampSchema,
+  sourceApp: z.literal("sentinel"),
+  lookup: phoneLookupResultSchema,
+  handoff: z.object({
+    questionForDerive: z.string().min(1),
+    recommendedConsumers: z.array(z.enum(["derive", "guardrail", "assembly", "manual"])).min(1),
+    actionPosture: z.enum(["observe", "review", "limit", "avoid", "insufficient-signal"])
+  })
+}) satisfies z.ZodType<SentinelRiskBrief>;
+
+export const parseSentinelRiskBrief = (input: unknown): SentinelRiskBrief =>
+  sentinelRiskBriefSchema.parse(input);
