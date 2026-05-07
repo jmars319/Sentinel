@@ -353,6 +353,8 @@ export default function App() {
   const [handoffJson, setHandoffJson] = useState("");
   const [importedRiskBrief, setImportedRiskBrief] = useState<SentinelRiskBrief | null>(null);
   const [deriveContext, setDeriveContext] = useState<DeriveReasoningBriefContext | null>(null);
+  const [handoffImportError, setHandoffImportError] = useState("");
+  const [outboundPreview, setOutboundPreview] = useState("");
   const [notice, setNotice] = useState("Local lookup desk ready.");
   const [isRunning, setIsRunning] = useState(false);
   const [isStoreReady, setIsStoreReady] = useState(false);
@@ -526,6 +528,7 @@ export default function App() {
       if (parsed.schema === "tenra-derive.reasoning-brief.v1") {
         const context = parseDeriveReasoningBriefContext(parsed);
         setDeriveContext(context);
+        setHandoffImportError("");
         setHandoffJson("");
         setNotice("Imported Derive reasoning brief as Sentinel review context.");
         return;
@@ -543,11 +546,23 @@ export default function App() {
       setSavedLookups((current) => [saved, ...current]);
       setActiveId(saved.id);
       setImportedRiskBrief(brief);
+      setHandoffImportError("");
       setNotice(`Imported ${brief.schema}; ready for ${brief.handoff.recommendedConsumers.join(", ")}.`);
     } catch (error) {
       setImportedRiskBrief(null);
-      setNotice(error instanceof Error ? error.message : "Risk brief import failed.");
+      const message = error instanceof Error ? error.message : "Risk brief import failed.";
+      setHandoffImportError(message);
+      setNotice(message);
     }
+  };
+
+  const previewOutbound = (target: "derive" | "guardrail") => {
+    if (!activeRiskBrief) return;
+    const payload =
+      target === "guardrail"
+        ? buildSentinelGuardrailReviewRequest({ brief: activeRiskBrief })
+        : buildSentinelRiskBrief({ lookup: activeRiskBrief.lookup, recommendedConsumers: ["derive"] });
+    setOutboundPreview(JSON.stringify(payload, null, 2));
   };
 
   const exportMarkdown = () => {
@@ -687,6 +702,7 @@ export default function App() {
           <button type="button" onClick={importRiskBrief}>
             Import Brief
           </button>
+          {handoffImportError ? <div className="notice error">{handoffImportError}</div> : null}
           {deriveContext ? (
             <div className="notice">
               Derive context: {deriveContext.confidence} confidence · {deriveContext.openQuestions.length} open question(s)
@@ -814,8 +830,14 @@ export default function App() {
                   <button type="button" onClick={copyDeriveBrief}>
                     Copy Derive Brief
                   </button>
+                  <button type="button" onClick={() => previewOutbound("derive")}>
+                    Preview Derive
+                  </button>
                   <button type="button" onClick={() => void copyRiskBrief("guardrail")}>
                     Send Guardrail
+                  </button>
+                  <button type="button" onClick={() => previewOutbound("guardrail")}>
+                    Preview Guardrail
                   </button>
                   <button type="button" onClick={() => void copyGuardrailReview()}>
                     Guardrail Review
@@ -830,7 +852,7 @@ export default function App() {
                     Export
                   </button>
                 </div>
-                <pre>{activeRiskBrief ? JSON.stringify(activeRiskBrief, null, 2) : markdown}</pre>
+                <pre>{outboundPreview || (activeRiskBrief ? JSON.stringify(activeRiskBrief, null, 2) : markdown)}</pre>
               </section>
             </div>
           </>
