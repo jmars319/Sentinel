@@ -8,6 +8,10 @@ risk lookup and brief source
 
 keep unique; emit risk briefs to Derive, Guardrail, and Assembly rather than duplicating lookup workflows.
 
+## Standalone Mode
+
+Runs as a complete risk lookup and brief review app with local lookup state, risk briefs, outbound previews, and import error handling.
+
 ## Accepted Inputs
 
 - `tenra-facet.orientation-packet.v1` from tenra Facet
