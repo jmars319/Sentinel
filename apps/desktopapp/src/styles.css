@@ -1,6 +1,6 @@
 :root {
-  color: #17222f;
-  background: #f2ede4;
+  color: #f2f2f5;
+  background: #1E1E22;
   font-family: Inter, "Avenir Next", "Segoe UI", sans-serif;
   line-height: 1.45;
 }
@@ -38,13 +38,13 @@ button:disabled {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 360px minmax(0, 1fr);
-  background: #f2ede4;
+  background: #1E1E22;
 }
 
 .lookup-sidebar {
   min-width: 0;
   border-right: 1px solid #d4c7b4;
-  background: #e7dcc9;
+  background: #1E1E22;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -63,7 +63,7 @@ button:disabled {
   letter-spacing: 0.12em;
   font-size: 0.72rem;
   font-weight: 800;
-  color: #586151;
+  color: #A0A0A0;
 }
 
 .brand-block h1,
@@ -90,13 +90,13 @@ button:disabled {
 .history-item small,
 .score-card span {
   margin: 0;
-  color: #56616a;
+  color: #A0A0A0;
 }
 
 .lookup-form {
   border: 1px solid #d3c5b1;
   border-radius: 8px;
-  background: #fbf8f2;
+  background: #1E1E22;
   padding: 14px;
   display: grid;
   gap: 12px;
@@ -137,8 +137,8 @@ textarea {
   min-width: 0;
   border: 1px solid #cabca8;
   border-radius: 8px;
-  background: #fffdfa;
-  color: #17222f;
+  background: #1E1E22;
+  color: #f2f2f5;
   padding: 10px 11px;
 }
 
@@ -177,9 +177,9 @@ textarea {
 }
 
 .history-actions button {
-  background: #fffdfa;
+  background: #1E1E22;
   border-color: #cabca8;
-  color: #17222f;
+  color: #f2f2f5;
 }
 
 .hidden-file-input {
@@ -208,7 +208,7 @@ textarea {
   width: 100%;
   border: 1px solid #d0c2ad;
   border-radius: 8px;
-  background: #f9f5ee;
+  background: #1E1E22;
   color: inherit;
   padding: 11px 12px;
   text-align: left;
@@ -219,7 +219,7 @@ textarea {
 .history-item:hover,
 .history-item-active {
   border-color: #6f7f61;
-  background: #fffdfa;
+  background: #1E1E22;
 }
 
 .history-item span,
@@ -243,7 +243,7 @@ textarea {
 .empty-state {
   border: 1px solid #d4c7b4;
   border-radius: 8px;
-  background: #fffdfa;
+  background: #1E1E22;
 }
 
 .assessment-header {
@@ -259,7 +259,7 @@ textarea {
   min-width: 120px;
   border: 1px solid #ddd3c4;
   border-radius: 8px;
-  background: #f7f3ec;
+  background: #1E1E22;
   padding: 12px;
   display: grid;
   gap: 2px;
@@ -306,7 +306,7 @@ textarea {
 .evidence-list li,
 .source-list li {
   border-left: 3px solid #6f7f61;
-  background: #f3f6ef;
+  background: #1E1E22;
   padding: 9px 10px;
   display: grid;
   gap: 2px;
@@ -314,7 +314,7 @@ textarea {
 
 .evidence-list span,
 .source-list span {
-  color: #56616a;
+  color: #A0A0A0;
   font-size: 0.84rem;
 }
 
@@ -326,9 +326,9 @@ textarea {
 
 .action-row button:nth-child(2),
 .action-row button:nth-child(3) {
-  background: #fffdfa;
+  background: #1E1E22;
   border-color: #cabca8;
-  color: #17222f;
+  color: #f2f2f5;
 }
 
 pre {
@@ -339,9 +339,9 @@ pre {
   word-break: break-word;
   border: 1px solid #ddd3c4;
   border-radius: 8px;
-  background: #f7f3ec;
+  background: #1E1E22;
   padding: 12px;
-  color: #17222f;
+  color: #f2f2f5;
   font-size: 0.82rem;
 }
 
@@ -417,13 +417,13 @@ select {
 .evidence-list span,
 .source-list span,
 label {
-  color: #a0a0a0;
+  color: #A0A0A0;
 }
 
 .lookup-form button,
 .action-row button {
-  border-color: #09a6d6;
-  background: #09a6d6;
+  border-color: #09A6D6;
+  background: #09A6D6;
   color: #071015;
 }
 
@@ -445,5 +445,68 @@ label {
 
 .evidence-list li,
 .source-list li {
-  border-left-color: #09a6d6;
+  border-left-color: #09A6D6;
 }
+
+/* JAMARQ/Tenra visual standard */
+:root {
+  color-scheme: dark;
+  --jamarq-canvas: #0D0D0F;
+  --jamarq-surface: #1E1E22;
+  --jamarq-surface-raised: #2C2C30;
+  --jamarq-text: #f2f2f5;
+  --jamarq-muted: #A0A0A0;
+  --jamarq-accent: #09A6D6;
+  --jamarq-border: rgba(242, 242, 245, 0.14);
+}
+
+html,
+body,
+#root {
+  background: var(--jamarq-canvas);
+  color: var(--jamarq-text);
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(9, 166, 214, 0.16), transparent 34rem),
+    var(--jamarq-canvas);
+}
+
+button,
+input,
+select,
+textarea {
+  border-color: var(--jamarq-border);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--jamarq-accent);
+  outline-offset: 2px;
+}
+
+[class*="panel"],
+[class*="card"],
+[class*="tile"],
+[class*="surface"] {
+  border-color: var(--jamarq-border);
+  background-color: var(--jamarq-surface);
+}
+
+[class*="sidebar"],
+[class*="rail"] {
+  border-color: var(--jamarq-border);
+  background: rgba(13, 13, 15, 0.92);
+}
+
+[class*="muted"],
+[class*="meta"],
+[class*="description"],
+[class*="summary"] {
+  color: var(--jamarq-muted);
+}
+
