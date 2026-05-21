@@ -1,10 +1,14 @@
 # Module Manifest
 
-Generated from `tenra Registry/contracts/handoff-catalog.json` by `tenra Registry/scripts/generate-suite-contract-docs.mjs`.
+Generated from `tenra Hub/contracts/handoff-catalog.json` by `tenra Hub/scripts/generate-suite-contract-docs.mjs`.
 
 ## Standalone Mode
 
 Runs as a complete risk lookup and brief review app with local lookup state, risk briefs, outbound previews, and import error handling.
+
+## Repository Path
+
+`capabilities/risk/tenra Sentinel`
 
 ## Required Suite Dependencies
 
